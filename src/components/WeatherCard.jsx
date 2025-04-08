@@ -20,7 +20,7 @@ const WeatherCard = ({ weatherData }) => {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl shadow-lg p-6 w-full md:w-[400px] space-y-4">
+    <div className="bg-slate-200 dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl shadow-lg p-6 w-full md:w-[400px] space-y-4">
       <h2 className="text-2xl font-semibold">
         {name}, <span className="text-gray-500 text-lg">{country}</span>
       </h2>

@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import SearchBar from './components/SearchBar';
 import WeatherCard from './components/WeatherCard';
 import Loader from './components/Loader';
-import { fetchWeather } from './api/weather';
+import { fetchWeather, fetchForecast } from './api/weather';
+import ForecastCard from './components/ForecastCard';
 
 function App() {
   const [city, setCity] = useState('');
@@ -10,6 +11,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [history, setHistory] = useState([]);
+  const [forecast, setForecast] = useState([]);
   const [isDark, setIsDark] = useState(() => {
     const saved = localStorage.getItem('theme');
     return saved === 'dark';
@@ -27,6 +29,9 @@ function App() {
       const data = await fetchWeather(city);
       setWeather(data);
 
+      const forecastData = await fetchForecast(city);
+      setForecast(forecastData.list);
+
       setHistory((prev) =>
         prev.includes(city) ? prev : [city, ...prev.slice(0, 4)]
       );      
@@ -39,10 +44,13 @@ function App() {
   };
 
   const handleHistoryClick = async (cityName) => {
-    setCity(cityName);
-    setLoading(true);
-    setError('');
-    setWeather(null);
+        setCity(cityName);
+        setLoading(true);
+        setError('');
+        setWeather(null);
+        const forecastData = await fetchForecast(city);
+        setForecast(forecastData.list);
+
     try {
       const data = await fetchWeather(cityName);
       setWeather(data);
@@ -85,7 +93,7 @@ function App() {
   return (
  
     <div className={`${isDark ? 'dark' : ''}`}>
-    <div className="min-h-screen w-screen bg-gradient-to-br from-blue-900 to-blue-500 dark:from-gray-900 dark:to-gray-800 text-white px-6 py-10 relative">
+    <div className="min-h-screen w-screen  bg-gradient-to-br from-blue-900 to-blue-500 dark:from-gray-900 dark:to-gray-800 text-white px-6 py-10 relative">
       {/* Top-left heading */}
       <h1 className="absolute top-6 left-6 text-3xl md:text-4xl font-bold flex items-center gap-2">
         🌤️ Weather Dashboard
@@ -130,16 +138,32 @@ function App() {
   
         {/* Right Side: Weather Card */}
         {weather && (
-            <div className="w-full md:w-1/2 flex flex-col items-center md:items-end mt-8 md:mt-0">
-              <button
-               onClick={handleRefresh}
-               className="mb-4 px-4 py-1 dark:bg-grey text-sm rounded-md border border-white hover:bg-white hover:text-black transition"
-              >
-              🔄 Refresh
-             </button>
-              <WeatherCard weatherData={weather} />
-            </div>
-        )}
+  <div className="w-full flex flex-col md:flex-row items-start justify-between gap-8 mt-8 md:mt-0">
+
+    {/* Forecast on Left */}
+    {forecast.length > 0 && (
+      <div className="w-full md:w-[40%]">
+        <ForecastCard forecast={forecast} />
+      </div>
+    )}
+
+    {/* Weather Card on Right */}
+    <div className="w-full md:w-[60%] flex flex-col items-center md:items-end gap-3">
+      
+      <div className="mt-7 w-full">
+        <WeatherCard weatherData={weather}  />
+      </div>
+      <button
+        onClick={handleRefresh}
+        className="px-4 py-1 bg-white text-black text-sm rounded-md border border-gray-300 hover:bg-gray-200 transition"
+      >
+        🔄 Refresh
+      </button>
+    </div>
+  </div>
+)}
+
+
 
       </div>
     </div>
