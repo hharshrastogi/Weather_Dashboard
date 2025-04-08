@@ -9,7 +9,8 @@ function App() {
   const [weather, setWeather] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  
+  const [history, setHistory] = useState([]);
+
 
   const handleSearch = async () => {
     if (!city) return;
@@ -21,13 +22,32 @@ function App() {
     try {
       const data = await fetchWeather(city);
       setWeather(data);
+
+      setHistory((prev) =>
+        prev.includes(city) ? prev : [city, ...prev.slice(0, 4)]
+      );      
+
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
     }
   };
-
+  const handleHistoryClick = async (cityName) => {
+    setCity(cityName);
+    setLoading(true);
+    setError('');
+    setWeather(null);
+    try {
+      const data = await fetchWeather(cityName);
+      setWeather(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
   return (
     <div className="min-h-screen w-screen bg-gradient-to-br from-blue-900 to-blue-500 text-white px-6 py-10 relative">
       {/* Top-left heading */}
@@ -45,6 +65,23 @@ function App() {
             onChange={(e) => setCity(e.target.value)}
             onSearch={handleSearch}
           />
+          {history.length > 0 && (
+            <div className="mt-4 text-left">
+              <h2 className="text-lg font-semibold mb-2">Search History</h2>
+              <ul className="space-y-1">
+                {history.map((item, index) => (
+               <li
+                  key={index}
+                  className="cursor-pointer text-blue-200 hover:text-white transition-colors"
+                  onClick={() => handleHistoryClick(item)}
+               >
+                {item}
+                  </li>
+                   ))}
+                </ul>
+                </div>
+            )}
+
           {loading && <Loader />}
           {error && <p className="text-red-300">{error}</p>}
         </div>
