@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import SearchBar from './components/SearchBar';
 import WeatherCard from './components/WeatherCard';
 import Loader from './components/Loader';
@@ -10,6 +10,10 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [history, setHistory] = useState([]);
+  const [isDark, setIsDark] = useState(() => {
+    const saved = localStorage.getItem('theme');
+    return saved === 'dark';
+  });
 
 
   const handleSearch = async () => {
@@ -33,6 +37,7 @@ function App() {
       setLoading(false);
     }
   };
+
   const handleHistoryClick = async (cityName) => {
     setCity(cityName);
     setLoading(true);
@@ -47,14 +52,34 @@ function App() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    const root = document.documentElement;
+    if (isDark) {
+      root.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      root.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  }, [isDark]);
+  
   
   return (
-    <div className="min-h-screen w-screen bg-gradient-to-br from-blue-900 to-blue-500 text-white px-6 py-10 relative">
+ 
+    <div className={`${isDark ? 'dark' : ''}`}>
+    <div className="min-h-screen w-screen bg-gradient-to-br from-blue-900 to-blue-500 dark:from-gray-900 dark:to-gray-800 text-white px-6 py-10 relative">
       {/* Top-left heading */}
       <h1 className="absolute top-6 left-6 text-3xl md:text-4xl font-bold flex items-center gap-2">
         🌤️ Weather Dashboard
       </h1>
-  
+      <button
+          onClick={() => setIsDark(!isDark)}
+          className="absolute top-6 right-6 px-3 py-1 rounded-md border border-white text-sm hover:bg-white hover:text-black transition"
+        >
+         {isDark ? '☀️ Light Mode' : '🌙 Dark Mode'}
+        </button>
+
       {/* Main layout */}
       <div className="flex flex-col md:flex-row items-center justify-between h-full max-w-6xl mx-auto pt-16 md:pt-0 md:min-h-[80vh]">
         
@@ -94,6 +119,8 @@ function App() {
         )}
       </div>
     </div>
+    </div>
+    
   );
   
     

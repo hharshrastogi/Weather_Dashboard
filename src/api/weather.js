@@ -5,7 +5,6 @@ const API_KEY = import.meta.env.VITE_API_KEY;
 export const fetchWeather = async (city) => {
   const query = city.trim();
 
-    console.log(API_KEY , query)
   try {
     const response = await axios.get(
       'https://api.openweathermap.org/data/2.5/weather',

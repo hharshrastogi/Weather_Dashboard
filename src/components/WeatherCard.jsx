@@ -20,7 +20,7 @@ const WeatherCard = ({ weatherData }) => {
   };
 
   return (
-    <div className="bg-white text-black rounded-xl shadow-lg p-6 w-full md:w-[400px] space-y-4">
+    <div className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl shadow-lg p-6 w-full md:w-[400px] space-y-4">
       <h2 className="text-2xl font-semibold">
         {name}, <span className="text-gray-500 text-lg">{country}</span>
       </h2>
@@ -28,13 +28,13 @@ const WeatherCard = ({ weatherData }) => {
       <p className="capitalize">{weather[0].description}</p>
 
       <div className="grid grid-cols-2 gap-2 text-sm text-gray-700 mt-2">
-        <p>Feels Like: {feels_like.toFixed(1)}°C</p>
-        <p>Humidity: {humidity}%</p>
-        <p>Wind: {speed} km/h</p>
-        <p>Pressure: {pressure} hPa</p>
-        <p>Visibility: {(visibility / 1000).toFixed(1)} km</p>
-        <p>Sunrise: {formatUnixTime(sunrise)}</p>
-        <p>Sunset: {formatUnixTime(sunset)}</p>
+        <p className="text-gray-700 dark:text-gray-300">Feels Like: {feels_like.toFixed(1)}°C</p>
+        <p className="text-gray-700 dark:text-gray-300">Humidity: {humidity}%</p>
+        <p className="text-gray-700 dark:text-gray-300">Wind: {speed} km/h</p>
+        <p className="text-gray-700 dark:text-gray-300">Pressure: {pressure} hPa</p>
+        <p className="text-gray-700 dark:text-gray-300">Visibility: {(visibility / 1000).toFixed(1)} km</p>
+        <p className="text-gray-700 dark:text-gray-300">Sunrise: {formatUnixTime(sunrise)}</p>
+        <p className="text-gray-700 dark:text-gray-300">Sunset: {formatUnixTime(sunset)}</p>
       </div>
     </div>
   );
