@@ -64,6 +64,23 @@ function App() {
     }
   }, [isDark]);
   
+  const handleRefresh = async () => {
+    if (!city) return;
+  
+    setLoading(true);
+    setError('');
+    setWeather(null);
+  
+    try {
+      const data = await fetchWeather(city);
+      setWeather(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   
   return (
  
@@ -113,10 +130,17 @@ function App() {
   
         {/* Right Side: Weather Card */}
         {weather && (
-          <div className="w-full md:w-1/2 flex justify-center md:justify-end mt-8 md:mt-0">
-            <WeatherCard weatherData={weather} />
-          </div>
+            <div className="w-full md:w-1/2 flex flex-col items-center md:items-end mt-8 md:mt-0">
+              <button
+               onClick={handleRefresh}
+               className="mb-4 px-4 py-1 dark:bg-grey text-sm rounded-md border border-white hover:bg-white hover:text-black transition"
+              >
+              🔄 Refresh
+             </button>
+              <WeatherCard weatherData={weather} />
+            </div>
         )}
+
       </div>
     </div>
     </div>
